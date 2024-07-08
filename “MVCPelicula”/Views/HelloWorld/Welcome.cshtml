@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Bienvenida ";
+}
+
+<h1>Bienvenido a mi app de peliculas SV</h1>
+
+<p>@ViewData["SaludoCompleto"]</p>
+
+<ul>
+    @{
+        int veces = (int)ViewData["Veces"];
+        string saludoCompleto = (string)ViewData["SaludoCompleto"];
+        for (int i = 1; i <= veces; i++)
+        {
+            <li>@saludoCompleto - vez número @i</li>
+        }
+    }
+</ul>
