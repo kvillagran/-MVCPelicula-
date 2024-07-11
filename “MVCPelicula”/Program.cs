@@ -1,6 +1,14 @@
+using MVCPelicula.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add DbContext
+builder.Services.AddDbContext<PeliculasDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PeliculasCN")));
 
 var app = builder.Build();
 
@@ -17,12 +25,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.MapControllerRoute(
     name: "customGreeting",
     pattern: "{controller}/{action}/{nombre}/{apellido}/{veces?}");
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.Run();
