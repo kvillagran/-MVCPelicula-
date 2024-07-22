@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace _MVCPelicula_.Migrations
 {
     [DbContext(typeof(PeliculasDBContext))]
-    [Migration("20240711200258_UpdateGeneroNombreLength")]
-    partial class UpdateGeneroNombreLength
+    [Migration("20240722024256_Migracion_Inicial")]
+    partial class Migracion_Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,38 @@ namespace _MVCPelicula_.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Generos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Comedia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Romance"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Aventura"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Acción"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "Ficción"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Nombre = "Drama"
+                        });
                 });
 
             modelBuilder.Entity("_MVCPelicula_.Models.Pelicula", b =>
@@ -76,6 +108,35 @@ namespace _MVCPelicula_.Migrations
                     b.HasIndex("GeneroId");
 
                     b.ToTable("Peliculas");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Director = "Hermanas Wachowski",
+                            FechaLanzamiento = new DateTime(2003, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GeneroId = 4,
+                            Precio = 10.99m,
+                            Titulo = "Matrix recargado"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Director = "Peter Jackson",
+                            FechaLanzamiento = new DateTime(2002, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GeneroId = 3,
+                            Precio = 11.99m,
+                            Titulo = "El señor de los anillos: Las dos torres"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Director = "Chris Columbus",
+                            FechaLanzamiento = new DateTime(2002, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GeneroId = 5,
+                            Precio = 9.99m,
+                            Titulo = "Harry Potter y la cámara secreta"
+                        });
                 });
 
             modelBuilder.Entity("_MVCPelicula_.Models.Pelicula", b =>

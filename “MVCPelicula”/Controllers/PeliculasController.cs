@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVCPelicula.Models;
 using _MVCPelicula_.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace _MVCPelicula_.Controllers
 {
@@ -16,16 +15,33 @@ namespace _MVCPelicula_.Controllers
 
         public PeliculasController(PeliculasDBContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         // GET: Peliculas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var peliculasDBContext = _context.Peliculas.Include(p => p.Genero);
-            return View(await peliculasDBContext.ToListAsync());
+            if (_context.Peliculas == null)
+            {
+                return Problem("No se ha inicializado el contexto");
+            }
+
+            var peliculas = from p in _context.Peliculas.Include(p => p.Genero)
+                            select p;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                peliculas = peliculas.Where(p => p.Titulo.Contains(searchString) || p.Genero.Nombre.Contains(searchString));
+            }
+
+            return View(await peliculas.ToListAsync());
         }
 
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]Index: filter on" + searchString;
+        }
 
         // GET: Peliculas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -47,7 +63,6 @@ namespace _MVCPelicula_.Controllers
         }
 
         // GET: Peliculas/Create
-        // GET: Peliculas/Create
         public IActionResult Create()
         {
             ViewData["GeneroId"] = new SelectList(_context.Generos, "Id", "Nombre");
@@ -59,7 +74,7 @@ namespace _MVCPelicula_.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Titulo,FechaLanzamiento,GeneroId,Precio,Director")] Pelicula pelicula)
         {
-            ModelState.Remove("Genero"); // Remover la validación de la propiedad de navegación Genero
+            ModelState.Remove("Genero"); 
             if (ModelState.IsValid)
             {
                 try
@@ -104,7 +119,7 @@ namespace _MVCPelicula_.Controllers
                 return NotFound();
             }
 
-            ModelState.Remove("Genero"); // Remover la validación de la propiedad de navegación Genero
+            ModelState.Remove("Genero"); 
             if (ModelState.IsValid)
             {
                 try
@@ -132,7 +147,6 @@ namespace _MVCPelicula_.Controllers
             ViewData["GeneroId"] = new SelectList(_context.Generos, "Id", "Nombre", pelicula.GeneroId);
             return View(pelicula);
         }
-
 
         // GET: Peliculas/Delete/5
         public async Task<IActionResult> Delete(int? id)
